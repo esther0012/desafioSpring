@@ -60,7 +60,7 @@ public class InicialService {
         Criptografia criptografia = new Criptografia();
         inicial.setPassword(criptografia.encriptar(inicial.getPassword()));
         InicialDTO email = converterEntidade.toDto(getInicialRepository().save(inicial));
-        String url = "http://localhost:4200/login?DjncdNSnfdsA=" + criptografia.encriptar(email.getEmail());
+        String url = "http://localhost:4200/?DjncdNSnfdsA=" + criptografia.encriptar(email.getEmail());
         emailSenderService.sendSimpleEmail(email.getEmail(), "Registro efetuado com sucesso!", url);
         return email;
 
@@ -75,7 +75,6 @@ public class InicialService {
         return converterEntidade.toDto(inicialRepository.save(inicial));
 
     }
-
 
     public InicialDTO entrar(String email, String password) {
         Criptografia criptografia = new Criptografia();
