@@ -33,13 +33,34 @@ public class Criptografia {
 
             return Base64Utils.encodeToString(textoPuro);
 
-
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException |
                  BadPaddingException e) {
             e.printStackTrace();
         }
 
         return "";
+    }
+
+    public String decript(String criptografia) {
+
+        try {
+            byte[] textocriptografado = Base64Utils.decodeFromString(criptografia);
+
+            String key = "Bar12345Bar12345";
+
+            Key desKey = new SecretKeySpec(key.getBytes(), "AES");
+
+            Cipher cifraAES = Cipher.getInstance("AES");
+
+            cifraAES.init(Cipher.DECRYPT_MODE, desKey);
+
+            return new String(cifraAES.doFinal(textocriptografado));
+
+        } catch (NoSuchPaddingException | InvalidKeyException | NoSuchAlgorithmException | IllegalBlockSizeException |
+                 BadPaddingException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

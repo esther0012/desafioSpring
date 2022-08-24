@@ -54,5 +54,10 @@ public class InicialController {
         return ResponseEntity.ok(getService().entrar(email, password));
     }
 
+    @RequestMapping("/validar")
+    public ResponseEntity<Boolean> validar(@RequestParam String email){
+        return ResponseEntity.ok(getService().validar(email));
+    }
+
 
 }

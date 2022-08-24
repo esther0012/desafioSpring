@@ -17,6 +17,8 @@ public class InicialDTO {
 
     private String descPermissao;
 
+    private Integer validado;
+
     public String setDescPermissao() {
         return permissao == 1 ? "ADMIN" : "PADRÃO";
     }

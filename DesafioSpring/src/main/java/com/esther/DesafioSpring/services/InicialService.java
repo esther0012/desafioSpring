@@ -5,7 +5,7 @@ import com.esther.DesafioSpring.domain.dtos.InicialDTO;
 import com.esther.DesafioSpring.model.Inicial;
 import com.esther.DesafioSpring.repository.InicialRepository;
 import com.esther.DesafioSpring.util.Criptografia;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class InicialService {
 
     private final InicialRepository inicialRepository;
 
     private final ConverterEntidade converterEntidade = new ConverterEntidade();
+
+    private final Criptografia criptografia;
 
     @Autowired
     private final EmailSenderService emailSenderService;
@@ -32,7 +34,6 @@ public class InicialService {
         Optional<Inicial> inicial = inicialRepository.findById(Id);
         return inicial.orElse(null);
     }
-
 
     public List<InicialDTO> findAll() {
         List<InicialDTO> retorno = new ArrayList<>();
@@ -57,18 +58,25 @@ public class InicialService {
     }
 
     public InicialDTO salvar(Inicial inicial) {
-        Criptografia criptografia = new Criptografia();
         inicial.setPassword(criptografia.encriptar(inicial.getPassword()));
         InicialDTO email = converterEntidade.toDto(getInicialRepository().save(inicial));
         String url = "http://localhost:4200/?DjncdNSnfdsA=" + criptografia.encriptar(email.getEmail());
         emailSenderService.sendSimpleEmail(email.getEmail(), "Registro efetuado com sucesso!", url);
         return email;
+    }
 
+    public boolean validar(String textocript) {
+        Inicial inicial = getInicialRepository().findByEmail(criptografia.decript(textocript)).orElse(null);
+        if (inicial != null) {
+            inicial.setValidado("1");
+            getInicialRepository().save(inicial);
+            return true;
+
+        } else
+            return false;
     }
 
     public InicialDTO resetar(Long Id) {
-
-        Criptografia criptografia = new Criptografia();
 
         Inicial inicial = findById(Id);
         inicial.setPassword(criptografia.encriptar("12345678"));
@@ -77,7 +85,7 @@ public class InicialService {
     }
 
     public InicialDTO entrar(String email, String password) {
-        Criptografia criptografia = new Criptografia();
+
         InicialDTO retorno;
 
         try {

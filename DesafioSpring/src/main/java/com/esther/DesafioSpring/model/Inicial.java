@@ -22,7 +22,7 @@ public class Inicial {
     @Column(name = "NOME")
     private String name;
 
-    @Column(name = "EMAIL")
+    @Column(name = "EMAIL", unique = true)
     private String email;
 
     @Column(name = "SENHA")
@@ -31,7 +31,7 @@ public class Inicial {
     @Column(name = "ID_PERMISSAO" )
     private Long permissao;
 
-    @Column(name = "RESET")
-    private String reset;
+    @Column(name = "VALIDADO")
+    private String validado;
 
 }
